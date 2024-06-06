@@ -1,0 +1,280 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Login.BAL
+@using System.Data;
+
+@using Ecommerce.Areas.Order.Models;
+@model Ecommerce.Areas.Order.Models.AddressModel;
+@*@model Ecommerce.Areas.Order.viewModel.View_Model;*@
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Order Confirm Page</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="Product" asp-controller="Product" asp-action="Index">Products</a></li>
+                <li class="breadcrumb-item"><a asp-area="Product" asp-controller="Product" asp-action="Cart_Items">Cart</a></li>
+                <li class="breadcrumb-item active">Address</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">    
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Address</h5>
+
+                        <!-- Floating Labels Form -->
+                        <form class="row g-3" method="post" asp-controller="Order" asp-action="ADD_USER_ADDRESS">
+
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    <label asp-for="Name" for="floatingName">Your Name</label>
+                                    <input asp-for="Name" type="text" class="form-control" id="floatingName" value="@CV.UserName()" placeholder="Your Name">
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+
+                                </div>
+                            </div>
+                     
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <label asp-for="Address" for="floatingTextarea">Address</label>
+                                    <textarea asp-for="Address" class="form-control" placeholder="Address" id="floatingTextarea" style="height: 100px;"></textarea>
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <div class="form-floating">
+                                        <label asp-for="statename" for="floatingState">State</label>
+                                        <input asp-for="statename" type="text" class="form-control" id="floatingCity" placeholder="State">
+                                        <span asp-validation-for="statename" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <div class="form-floating">
+                                        <label asp-for="cityname" for="floatingCity">City</label>
+                                        <input asp-for="cityname" type="text" class="form-control" id="floatingCity" placeholder="City">
+                                        <span asp-validation-for="cityname" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                         
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    <label asp-for="pincode" for="floatingZip">Zip</label>
+                                    <input asp-for="pincode" type="text" class="form-control" id="floatingZip" placeholder="Zip">
+                                    <span asp-validation-for="pincode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2 d-flex justify-content-center">
+                                <div class=" text-center w-full center ">
+                                    <button type="submit" class="btn btn-primary">Add Address</button>
+                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </div>
+                           
+                            <div class="col-md-12">
+                                
+                                   @if (ViewBag.AddressData.Rows.Count > 0)
+                                {
+                                     <fieldset class="row mb-3 w-full">
+                                            <legend class="col-form-label col-sm-3 pt-0">Addresses</legend>
+                                    @foreach (DataRow obj in ViewBag.AddressData.Rows)
+                                    {
+                                       
+                                            <div class="col-sm-10">
+                                                <div class="form-check" style="width:100%">
+                                                    <input class="form-check-input" asp-for="@Model.SelectedAddressID" type="radio" name="gridRadios" value="@obj["AddressID"]">
+
+                                                    <div class=" mt-4 w-full d-flex" style="width:100%; display:flex">
+                                                        <div class="card" style="width:100%">
+                                                            <div class="card-body d-flex flex-wrap  justify-content-between ">
+                                                                <div>
+                                                                    <p>Name: @obj["Name"]</p>
+                                                                    <h6 class="">Address:</h6><span>@obj["Address"]</span>
+                                                                </div>
+                                                                <div>
+                                                                    <h6 class="">city: <span>@obj["cityname"]</span></h6>
+                                                                    <h6 class="">state: <span>@obj["statename"]</span></h6>
+                                                                    <h6 class="">pincode: <span>@obj["pincode"]</span></h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                    }
+                                        </fieldset>
+
+                                }
+
+                                
+                            </div>
+                            
+                        </form><!-- End floating Labels Form -->
+
+                    </div>
+                </div>
+
+            </div>
+          
+            <div class="col-lg-6">
+                <h5>Cart Summary</h5>
+                <section class="section">
+                    
+                    <div class="row align-items-top">
+                        @{
+                            int totalDiscountPrice = 0; // Variable to store the total discounted price
+                                ViewBag.CartDataID = new List<int>();
+
+                        }
+                        @if (ViewBag.CartData.Rows.Count > 0)
+                        {
+                            @foreach (DataRow obj in ViewBag.CartData.Rows)
+                            {
+                                ViewBag.CartDataID.Add((int)obj["CartID"]);
+                                
+                                    <div class="col-lg-12">
+                                    <div class="card mb-3">
+                                        <div class="row g-0">
+                                            <div class="col-md-2">
+                                                <img src="@Url.Content(obj["PhotoPath"].ToString())" class="img-fluid rounded-start" style="width:200px;height:100px" alt="...">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">@obj["ProductName"]</h5>
+                                                    <h6>Qtn:- @obj["Quantity"]</h6>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="card-body d-flex align-items-center justify-content-center ">
+                                                    @{
+                                                        int discountPrice = findDiscountPrice((int)obj["Price"], (double)obj["DiscountPercentage"]);
+                                                        totalDiscountPrice += discountPrice; // Add to the total
+                                                    }
+                                                    <h5>@discountPrice</h5><h6 class="text-muted ml-2"><del>@obj["Price"]</del></h6>
+                                                </div>
+                                                <div class=" d-flex align-items-center justify-content-center ">
+                                                    <form method="post" asp-area="Product" asp-controller="Product" , asp-action="Delete_From_Cart">
+                                                        <input type="hidden" name="CartID" value="@Convert.ToInt32(obj["CartID"])" />
+                                                        <button type="submit" class="btn btn-danger btn-rounded"><i class="fa fa-trash"></i></button>
+                                                    </form>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div><!-- End Card with an image on left -->
+                                </div>
+                            }
+                            <div class="dark-line" style=" width: 100%;height: 1px;background-color: gray; margin: 10px 0;"></div> <!-- Dark line after each iteration -->
+
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-10">
+                                            <h5>Total Price:</h5>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h4>@totalDiscountPrice</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="row g-0">
+                                    <div class="col-md-12">
+                                        <form>
+                                        <button type="button" class="btn btn-primary" id="orderButton">Order</button>
+                                        </form>
+                                        @*<a type="button" class="btn btn-success" style="width:100%" asp-area="Order" asp-controller="Order" asp-action="Save_Order">Order Now</a>*@
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                        }
+                        else
+                        {
+                            <div class="col-lg-12">
+                                <div class="alert alert-warning" role="alert">
+                                    No items in the cart.
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </section>
+
+                </main><!-- End #main -->
+
+            </div>
+        </div>
+    </section>
+
+@functions {
+    int selectedaddressID = 0;
+    int findDiscountPrice(int price, double discountPercentage)
+    {
+        // Your discount calculation logic here
+        // Return the discounted price
+
+        return Convert.ToInt32(price - (price * discountPercentage / 100));
+
+    }
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            // Attach click event listener to the "Order Now" button
+            $("#orderButton").click(function () {
+                // Get all CartDataIDs
+                var cartDataIDs = [];
+        @foreach (DataRow obj in ViewBag.CartData.Rows)
+        {
+            @:cartDataIDs.push('@obj["CartID"]');
+        }
+
+                // Get the selected address ID
+                var selectedAddressID = $('input[name="gridRadios"]:checked').val();
+
+                // Send the CartDataIDs and AddressID to the controller using AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/Order/Order/Save_Order", // Replace with your controller action URL
+                    data: { cartDataIDs: cartDataIDs, addressID: selectedAddressID }, // Pass the array of CartDataIDs and the selected AddressID
+                    traditional: true, // Needed for array serialization
+                    success: function (response) {
+                        // Handle success response if needed
+                        console.log("CartDataIDs sent successfully.");
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response if needed
+                        console.error("Error occurred:", error);
+                    }
+                });
+            });
+        });
+
+    </script>
+    
+}

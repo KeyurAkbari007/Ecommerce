@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@using System.Data;
+@model DataTable;
+
+<h5><i class="fa-solid fa-gear"></i> All Orders </h5>
+
+@*<a asp-controller="AdminOrders" asp-action="" class="btn btn-success"><i class="fa-solid fa-plus"></i> Add Orders</a>*@
+
+<hr />
+@*<div class="pagetitle">
+    <h1>Cards</h1>
+   <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item">Components</li>
+            <li class="breadcrumb-item active">Cards</li>
+        </ol>
+    </nav>
+</div>*@<!-- End Page Title -->
+
+
+
+<table id="sample_1" class="table table-hover">
+    <thead>
+        <tr>
+            <th class="">OrderID</th>
+            <th>CartID</th>
+            <th>UserID</th>
+            <th class="text-center">AddressID</th>
+            <th class="text-center">ProductName</th>
+            <th>Address</th>
+            <th>Created</th>
+            <th>Modified</th>
+            @*<th>Action</th>*@
+            <th>Status</th>
+            <th class="text-center">Change Status </th>
+        </tr>
+    </thead>
+    <tbody id="sample_2">
+        @if (Model != null)
+        {
+            @foreach (DataRow dr in Model.Rows)
+            {
+                string statusValue = dr["Status"].ToString().ToLower();
+
+                <tr>
+                    <td>@dr["OrderID"]</td>
+                    <td>@dr["CartID"]</td>
+                    <td>@dr["UserID"]</td>
+                    <td class="text-center">@dr["AddressID"]</td>
+                    <td class="text-center">@dr["ProductName"]</td>
+                    <td>@dr["Address"]</td>
+                    <td>@Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy")</td>
+                    <td>@Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy")</td>
+                    @*<td class="d-flex justify-content-between">
+
+                        <form method="post" asp-area="AdminOrders" asp-controller="AdminOrders" , asp-action="">
+                            <input type="hidden" name="OrderID" value="@Convert.ToInt32(dr["OrderID"])" />
+                            <button type="submit" class="btn btn-danger btn-rounded"><i class="fa fa-trash"></i></button>
+                        </form>
+
+                        <form method="get" asp-area="AdminOrders" asp-controller="AdminOrders" asp-action="">
+                            <input type="hidden" name="OrderID" value="@Convert.ToInt32(dr["OrderID"].ToString())">
+                            <button type="submit" class="btn btn-primary btn-rounded"><i class="fa fa-pen-to-square"></i></button>
+                        </form>
+                    </td>*@
+                    
+                    <td>
+                        <select name="Status" id="OrderStatus_@dr["OrderID"]" data-order-id="@dr["OrderID"]" disabled>
+                            <option value="pending"  selected="@(statusValue== "pending" ? "selected" :null)"> Pending</option>
+                            <option value="dispatched" selected="@(statusValue== "dispatched" ? "selected" :null)" )>Dispatched</option>
+                            <option value="cencel" selected="@(statusValue == "cencel" ? "selected" :null)">Cancel</option>
+                        </select>
+                    </td>
+
+                    <td class="text-center">
+                        <button class="btn btn-primary btn-rounded enableDropdownBtn" data-dropdown-id="OrderStatus_@dr["OrderID"]">
+                            <i class="fa fa-pen-to-square"></i>
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            $(".enableDropdownBtn").on("click", function () {
+                var dropdownId = $(this).data("dropdown-id");
+                $("#" + dropdownId).removeAttr("disabled");
+
+                $("#" + dropdownId).on("change", function () {
+                    var orderId = $(this).data("order-id");
+                    var newStatus = $(this).val();
+
+                    // Make an AJAX call to update the database
+                    $.ajax({
+                        url: "/AdminOrders/AdminOrders/UpdateStatus", // Replace with your actual controller and action method
+                        type: "POST",
+                        data: { orderId: orderId, newStatus: newStatus },
+                        success: function (data) {
+                          console.log("Hello DOne");
+                            location.reload();
+                            // Handle success, if needed
+                        },
+                        error: function (error) {
+                            console.log("Error updating status: " + error);
+                        },
+                         complete: function (data) {
+                            console.log("Hello done 2");
+
+                            // Disable the current dropdown after the AJAX call is complete
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+  ]
+}
+
+
+
+
+

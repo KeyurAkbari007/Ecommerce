@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@using System.Data;
+@model DataTable;
+
+<h5><i class="fa-solid fa-gear"></i> All Products </h5>
+<hr/>
+
+<a asp-controller="AdminProducts" asp-action="AddEditFormPage" class="btn btn-success"><i class="fa-solid fa-plus"></i> Add Product</a>
+
+<hr />
+@*<div class="pagetitle">
+    <h1>Cards</h1>
+   <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item">Components</li>
+            <li class="breadcrumb-item active">Cards</li>
+        </ol>
+    </nav>
+</div>*@<!-- End Page Title -->
+
+
+
+<table id="sample_1" class="table table-hover">
+    <thead>
+        <tr>
+            <th class="text-center">ProductID</th>
+            <th>ProductName</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th class="text-center">%</th>
+            <th class="text-center">Rating</th>
+            <th class="text-center">Stock</th>
+            <th>Brand</th>
+            <th class="text-center">CategoryName</th>
+            <th class="text-center">isDeleted</th>
+            <th class="text-center">Created</th>
+            <th class="text-center">Modified</th>
+            <th class="text-center">Action</th>
+
+        </tr>
+    </thead>
+    <tbody id="sample_2">
+
+        @foreach (DataRow dr in Model.Rows)
+        {
+            <tr>
+                <td>@dr["ProductID"]</td>
+                <td>@dr["ProductName"]</td>
+                <td class="text-center"><img src="@Url.Content(dr["PhotoPath"].ToString())" alt="@dr["ProductName"]" style="height:40px; width:40px; border-radius:50%;" /></td>
+              
+                <td>@dr["Price"]</td>
+                <td class="text-center">@dr["DiscountPercentage"]</td>
+                <td class="text-center">@dr["Rating"]</td>
+                <td>@dr["Stock"]</td>
+                <td class="text-center">@dr["Brand"]</td>
+                <td class="text-center">@dr["CategoryName"]</td>
+                <td class="text-center">@dr["isDeleted"]</td>
+                <td>@Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy")</td>
+                <td>@Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy")</td>
+                <td class="d-flex justify-content-between">
+
+                    <form method="post" asp-area="AdminProducts" asp-controller="AdminProducts" , asp-action="DeleteProduct">
+                        <input type="hidden" name="ProductID" value="@Convert.ToInt32(dr["ProductID"])" />
+                        <button type="submit" class="btn btn-danger btn-rounded"><i class="fa fa-trash"></i></button>
+                    </form>
+
+                    <form method="get" asp-area="AdminProducts" asp-controller="AdminProducts" asp-action="AddEditFormPage">
+                        <input type="hidden" name="ProductID" value="@Convert.ToInt32(dr["ProductID"].ToString())">
+                        <button type="submit" class="btn btn-primary btn-rounded"><i class="fa fa-pen-to-square"></i></button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+
+@functions {
+    int findDiscountPrice(int price, double discountPercentage)
+    {
+        // Your discount calculation logic here
+        // Return the discounted price
+
+        return int.Parse((price - (price * discountPercentage / 100)).ToString());
+    }
+}
+
+

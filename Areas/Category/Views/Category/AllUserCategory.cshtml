@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Data;
+@model DataTable;
+<!-- Categories Start -->
+<div class="container-fluid pt-5">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+        <span class="bg-secondary pr-3">Categories</span>
+    </h2>
+    <div class="row px-xl-5 pb-3">
+         @foreach (DataRow obj in Model.Rows)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <a class="text-decoration-none" href="">
+                    <div class="cat-item d-flex align-items-center mb-4 h-50 p-2 g-2 ml-2 ">
+                        <h6>@obj["CategoryName"] </h6>
+                        <h6 class="text-body"> &nbsp; @obj["ProductCount"]Products</h6>
+
+                    </div>
+                </a>
+            </div>
+        }
+        
+    </div>
+</div>
+<!-- Categories End -->

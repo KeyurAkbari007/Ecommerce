@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Data;
+@model DataTable;
+@using Login.BAL;
+
+@if (TempData["insertmsg"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Success!</strong> @TempData["insertmsg"]
+    </div>
+}
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-info alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Info!</strong> @TempData["message"]
+    </div>
+}
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-warning alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Warning!</strong> Something Wrong.
+    </div>
+}
+
+
+
+
+<!-- Products Start -->
+<div class="container-fluid pt-5 pb-3">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">All Products</span></h2>
+    <div class="row px-xl-5">
+        @foreach (DataRow obj in Model.Rows)
+          {
+            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <div class="product-item bg-light mb-4">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100 " style="height:300px" src="@Url.Content(obj["PhotoPath"].ToString())" alt="@obj["ProductName"]">
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" asp-controller="Product" asp-action="AddToCart" asp-route-UserID="@CV.UserID()" asp-route-ProductID="@obj["ProductID"]" ><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="">@obj["ProductName"]</a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>@findDiscountPrice((int)obj["Price"],(double)obj["DiscountPercentage"])</h5><h6 class="text-muted ml-2"><del>@obj["Price"]</del></h6>,
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small>(99)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        }
+        
+      
+    </div>
+</div>
+<!-- Products End -->
+
+@functions {
+    int findDiscountPrice(int price, double discountPercentage) {
+        // Your discount calculation logic here
+        // Return the discounted price
+
+        return Convert.ToInt32(price - (price * discountPercentage / 100));
+
+    }
+}
